@@ -1,0 +1,2507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heard in Class, Lost After | Next-Gen Academic Portal</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-void: #07090e;
+            --bg-surface: rgba(14, 19, 31, 0.72);
+            --bg-surface-elevated: #111726;
+            --bg-card: rgba(18, 26, 43, 0.6);
+            --bg-subtle: rgba(255, 255, 255, 0.035);
+            
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-medium: rgba(255, 255, 255, 0.16);
+            --border-glow: rgba(99, 102, 241, 0.45);
+
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-glow: rgba(99, 102, 241, 0.35);
+            
+            --cyan: #06b6d4;
+            --cyan-glow: rgba(6, 182, 212, 0.3);
+
+            --emerald: #10b981;
+            --emerald-glow: rgba(16, 185, 129, 0.3);
+
+            --amber: #f59e0b;
+            --amber-glow: rgba(245, 158, 11, 0.3);
+
+            --rose: #f43f5e;
+            --rose-glow: rgba(244, 63, 94, 0.3);
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-faint: #64748b;
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-sans);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        /* Animated Interactive Canvas Mesh */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        /* Ambient Glowing Spheres */
+        .ambient-sphere {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.28;
+            animation: pulseOrb 12s ease-in-out infinite alternate;
+        }
+        .sphere-1 {
+            width: 450px;
+            height: 450px;
+            background: var(--primary);
+            top: -80px;
+            left: -100px;
+        }
+        .sphere-2 {
+            width: 520px;
+            height: 520px;
+            background: var(--cyan);
+            bottom: -150px;
+            right: -100px;
+            animation-duration: 16s;
+            animation-delay: -3s;
+        }
+
+        @keyframes pulseOrb {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.15) translate(30px, 40px); }
+            100% { transform: scale(0.95) translate(-20px, 20px); }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 14, 23, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.16);
+            border-radius: var(--radius-full);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Top Navigation Header */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            background: rgba(7, 9, 14, 0.82);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.85rem 1.5rem;
+            transition: all 0.25s ease;
+        }
+
+        .nav-inner {
+            max-width: 1360px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--primary), var(--cyan));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 0 20px var(--primary-glow);
+            flex-shrink: 0;
+        }
+
+        .brand-meta h1 {
+            font-size: 1.12rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand-meta p {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Role Switcher Pill */
+        .role-switcher {
+            display: flex;
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-full);
+            padding: 3px;
+            gap: 3px;
+        }
+
+        .role-btn {
+            background: transparent;
+            border: none;
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius-full);
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .role-btn:hover {
+            color: var(--text-main);
+        }
+
+        .role-btn.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 0 16px var(--primary-glow);
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border-color: var(--border-medium);
+        }
+
+        .icon-btn.active {
+            color: var(--cyan);
+            border-color: var(--cyan-glow);
+        }
+
+        /* Main Workspace Container */
+        .main-app {
+            position: relative;
+            z-index: 10;
+            max-width: 1360px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 1.5rem 1.25rem 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        /* Glass Surface Containers */
+        .glass-panel {
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: var(--border-medium);
+        }
+
+        /* Top Hero / Banner */
+        .hero-banner {
+            padding: 1.5rem 1.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(6, 182, 212, 0.04) 50%, rgba(14, 19, 31, 0.7));
+            border-left: 4px solid var(--primary);
+        }
+
+        .hero-info h2 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-info p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            max-width: 650px;
+        }
+
+        .live-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--radius-full);
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--emerald);
+            border: 1px solid var(--emerald-glow);
+        }
+
+        .live-pulse {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--emerald);
+            box-shadow: 0 0 10px var(--emerald);
+            animation: pulseDot 1.6s infinite ease-in-out;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 0.4; transform: scale(0.85); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* Views (Student vs Faculty) */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* STUDENT HUB GRID */
+        .student-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 1.85fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .student-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Form Submissions */
+        .panel-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .panel-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        .doubt-form {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .label-hint {
+            font-size: 0.72rem;
+            color: var(--text-faint);
+            font-weight: 400;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            background: rgba(14, 19, 31, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+
+        input:hover, select:hover, textarea:hover {
+            border-color: var(--border-medium);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        select option {
+            background-color: var(--bg-surface-elevated);
+            color: var(--text-main);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 105px;
+            line-height: 1.55;
+        }
+
+        /* Chips Bar */
+        .chip-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.35rem;
+        }
+
+        .chip-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            border-radius: var(--radius-full);
+            padding: 0.25rem 0.65rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .chip-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary-light);
+            border-color: var(--border-glow);
+        }
+
+        /* Roadblock Pill Selectors */
+        .tag-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .tag-pill {
+            display: none;
+        }
+
+        .tag-pill-label {
+            cursor: pointer;
+            padding: 0.4rem 0.75rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .tag-pill:checked + .tag-pill-label {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 14px var(--primary-glow);
+        }
+
+        /* Anonymous Toggle Switch */
+        .toggle-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+        }
+
+        .toggle-text strong {
+            display: block;
+            font-size: 0.83rem;
+            color: var(--text-main);
+        }
+
+        .toggle-text span {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+        }
+
+        .switch-input {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch-input input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: .25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .25s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+        }
+
+        .switch-input input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        .switch-input input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover, #4f46e5));
+            color: #ffffff;
+            border: none;
+            padding: 0.95rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transition: all 0.25s ease;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px var(--primary-glow);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Stream Header Controls */
+        .stream-controls {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .search-field {
+            flex: 1;
+            min-width: 220px;
+            position: relative;
+        }
+
+        .search-field input {
+            padding-left: 2.3rem;
+            font-size: 0.85rem;
+            padding-top: 0.65rem;
+            padding-bottom: 0.65rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-faint);
+            pointer-events: none;
+        }
+
+        .filter-select {
+            padding: 0.65rem 0.9rem;
+            font-size: 0.82rem;
+            border-radius: var(--radius-md);
+            background: rgba(14, 19, 31, 0.9);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        /* Student Sub-Tabs */
+        .student-subtabs {
+            display: flex;
+            gap: 0.4rem;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 4px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .subtab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subtab-btn.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+        }
+
+        /* Live Stream Cards List */
+        .doubts-stream {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 720px;
+            overflow-y: auto;
+        }
+
+        .doubt-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .doubt-item:hover {
+            border-color: var(--border-medium);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        .doubt-item.urgency-high {
+            border-left: 4px solid var(--rose);
+            background: linear-gradient(90deg, rgba(244, 63, 94, 0.08), var(--bg-card) 25%);
+        }
+
+        .doubt-item.status-resolved {
+            border-left: 4px solid var(--emerald);
+            opacity: 0.88;
+        }
+
+        .doubt-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .badge-cluster {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+        }
+
+        .course-tag {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--primary-light);
+            border: 1px solid var(--border-glow);
+            padding: 0.15rem 0.55rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .urgency-pill {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.15rem 0.55rem;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .urgency-pill.standard { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
+        .urgency-pill.medium { background: rgba(245, 158, 11, 0.15); color: var(--amber); border: 1px solid var(--amber-glow); }
+        .urgency-pill.high { background: rgba(244, 63, 94, 0.18); color: var(--rose); border: 1px solid var(--rose-glow); }
+
+        .status-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.18rem 0.65rem;
+            border-radius: var(--radius-full);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-badge.open { background: rgba(245, 158, 11, 0.12); color: var(--amber); border: 1px solid var(--amber-glow); }
+        .status-badge.recap { background: rgba(6, 182, 212, 0.15); color: var(--cyan); border: 1px solid var(--cyan-glow); }
+        .status-badge.office { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+        .status-badge.resolved { background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid var(--emerald-glow); }
+
+        .doubt-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: baseline;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .lecture-anchor {
+            font-family: var(--font-mono);
+            font-size: 0.73rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.15rem 0.5rem;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+        }
+
+        .doubt-body {
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            white-space: pre-line;
+        }
+
+        /* Instructor Guidance Output Box */
+        .instructor-note-box {
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: var(--radius-md);
+            padding: 0.9rem 1.1rem;
+            margin-top: 0.25rem;
+        }
+
+        .instructor-note-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 0.35rem;
+        }
+
+        .instructor-note-text {
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .doubt-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 0.75rem;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-upvote {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 0.4rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-upvote:hover {
+            border-color: var(--border-glow);
+            color: var(--primary-light);
+            background: rgba(99, 102, 241, 0.12);
+            transform: scale(1.03);
+        }
+
+        .btn-upvote.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 0 16px var(--primary-glow);
+        }
+
+        /* FACULTY COMMAND CENTER */
+        .faculty-workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* KPI Dashboard Row */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .kpi-card.indigo::before { background: var(--primary); }
+        .kpi-card.amber::before { background: var(--amber); }
+        .kpi-card.rose::before { background: var(--rose); }
+        .kpi-card.emerald::before { background: var(--emerald); }
+
+        .kpi-label {
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .kpi-value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: var(--font-sans);
+        }
+
+        .kpi-desc {
+            font-size: 0.75rem;
+            color: var(--text-faint);
+        }
+
+        /* Analytics Bar / Bottlenecks Strip */
+        .analytics-strip {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .analytics-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .bottleneck-bars {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.85rem;
+        }
+
+        .bottleneck-item {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border-subtle);
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--cyan));
+            border-radius: var(--radius-full);
+            transition: width 0.4s ease;
+        }
+
+        /* Action Buttons on Faculty Feed */
+        .faculty-action-grid {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action-sm {
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--border-subtle);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-action-sm:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--border-medium);
+        }
+
+        .btn-action-sm.btn-resolve {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--emerald);
+            border-color: var(--emerald-glow);
+        }
+        .btn-action-sm.btn-resolve:hover {
+            background: var(--emerald);
+            color: #ffffff;
+        }
+
+        .btn-action-sm.btn-recap {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--cyan);
+            border-color: var(--cyan-glow);
+        }
+        .btn-action-sm.btn-recap:hover {
+            background: var(--cyan);
+            color: #000;
+        }
+
+        /* Auth Card for Instructors */
+        .auth-container {
+            max-width: 460px;
+            margin: 2rem auto;
+            width: 100%;
+        }
+
+        /* Modals & Dialogs */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(3, 5, 8, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-dialog {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 620px;
+            box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.7);
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .modal-overlay.open .modal-dialog {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.15rem;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: rgba(0, 0, 0, 0.25);
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            padding: 0.65rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Toast Engine with Progress Bar */
+        .toast-shelf {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 120;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            pointer-events: none;
+        }
+
+        .toast-msg {
+            pointer-events: auto;
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius-md);
+            padding: 0.9rem 1.25rem;
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            min-width: 300px;
+            max-width: 420px;
+            position: relative;
+            overflow: hidden;
+            animation: slideInToast 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .toast-msg.toast-success { border-left: 4px solid var(--emerald); }
+        .toast-msg.toast-info { border-left: 4px solid var(--primary); }
+        .toast-msg.toast-warn { border-left: 4px solid var(--amber); }
+
+        .toast-meter {
+            position: absolute;
+            bottom: 0; left: 0; height: 3px;
+            background: var(--primary-light);
+            animation: drainMeter 3.5s linear forwards;
+        }
+
+        @keyframes slideInToast {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes drainMeter {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        .empty-stream-box {
+            text-align: center;
+            padding: 4rem 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .empty-stream-box svg {
+            width: 52px;
+            height: 52px;
+            margin-bottom: 1rem;
+            color: var(--text-faint);
+        }
+
+        /* Printable / Lecture Slide Export Style */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            #bgCanvas, .navbar, .ambient-sphere, .role-switcher, .student-grid, .stream-controls, .btn-upvote, .faculty-action-grid, .toast-shelf {
+                display: none !important;
+            }
+            .glass-panel {
+                border: 1px solid #ccc !important;
+                box-shadow: none !important;
+                background: white !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic 3D Particle Mesh Canvas -->
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="ambient-sphere sphere-1"></div>
+    <div class="ambient-sphere sphere-2"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-inner">
+            <div class="brand-container" onclick="switchPerspective('student')">
+                <div class="brand-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                        <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                    </svg>
+                </div>
+                <div class="brand-meta">
+                    <h1>Heard in Class, Lost After <span style="font-size:0.65rem; background:rgba(99,102,241,0.2); border:1px solid var(--border-glow); padding:2px 7px; border-radius:99px; color:var(--primary-light);">SYNAPSE v3</span></h1>
+                    <p>Turning lecture confusion into faculty clarity</p>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <!-- Dual Role Selector -->
+                <div class="role-switcher">
+                    <button id="btnRoleStudent" class="role-btn active" onclick="switchPerspective('student')">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span>Student Hub</span>
+                    </button>
+                    <button id="btnRoleFaculty" class="role-btn" onclick="switchPerspective('faculty')">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                        <span>Faculty Desk</span>
+                    </button>
+                </div>
+
+                <!-- Sound Audio Synth Toggle -->
+                <button id="soundBtn" class="icon-btn active" title="Toggle Haptic Synth Feedback" onclick="toggleSound()">
+                    <svg id="soundIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                </button>
+
+                <!-- Export Markdown / Lecture Recap Brief -->
+                <button class="icon-btn" title="Export Lecture Recap Sheet" onclick="openExportModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="main-app">
+
+        <!-- Top Live Hub Status -->
+        <section class="glass-panel hero-banner">
+            <div class="hero-info">
+                <h2>Never walk away from a lecture lost.</h2>
+                <p>Log unresolved derivations, code snags, and conceptual bottlenecks. Upvote shared stumbling points to help your professors adapt upcoming recaps and office hours.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="live-tag">
+                    <span class="live-pulse"></span>
+                    <span id="syncIndicator">Live Multi-Tab Sync Active</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             1. STUDENT PERSPECTIVE VIEW
+             =================================================================== -->
+        <div id="studentView" class="view-section active">
+            <div class="student-grid">
+
+                <!-- Doubt Submission Station -->
+                <section class="glass-panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">
+                                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--primary-light)" stroke-width="2.3"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                <span>Log a Lecture Breakdown</span>
+                            </div>
+                            <div class="panel-subtitle">Pinpoint where the professor lost you before forgetting</div>
+                        </div>
+                    </div>
+
+                    <form id="studentDoubtForm" class="doubt-form" onsubmit="handleStudentFormSubmit(event)">
+                        <!-- Student ID & Course -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputStudentId">Student ID / Alias</label>
+                                <input type="text" id="inputStudentId" required placeholder="e.g. 12104523">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputCourse">Course Code</label>
+                                <select id="inputCourse" required>
+                                    <!-- Dynamic Course Options -->
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Quick Chips -->
+                        <div class="chip-group">
+                            <button type="button" class="chip-btn" onclick="selectCourseChip('CSE326 - Internet Programming')">CSE326 Web</button>
+                            <button type="button" class="chip-btn" onclick="selectCourseChip('INT108 - Python Programming')">INT108 Python</button>
+                            <button type="button" class="chip-btn" onclick="selectCourseChip('MTH165 - Mathematics for Engineers')">MTH165 Math</button>
+                            <button type="button" class="chip-btn" onclick="selectCourseChip('INT335 - Design Thinking')">INT335 Design</button>
+                        </div>
+
+                        <!-- Topic & Lecture Anchor -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputTopic">Topic / Core Concept</label>
+                                <input type="text" id="inputTopic" required placeholder="e.g. Async Promise chaining">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAnchor">Lecture Anchor <span class="label-hint">Slide or Timestamp</span></label>
+                                <input type="text" id="inputAnchor" placeholder="e.g. Slide 32 / 41:20 mark">
+                            </div>
+                        </div>
+
+                        <!-- Roadblock Intellectual Gap Tag Pills -->
+                        <div class="form-group">
+                            <label>Type of Roadblock</label>
+                            <div class="tag-selector">
+                                <input type="radio" name="gapPill" id="tag1" value="Math Derivation" class="tag-pill" checked>
+                                <label for="tag1" class="tag-pill-label">📐 Math Derivation</label>
+
+                                <input type="radio" name="gapPill" id="tag2" value="Conceptual Intuition" class="tag-pill">
+                                <label for="tag2" class="tag-pill-label">💡 Conceptual Intuition</label>
+
+                                <input type="radio" name="gapPill" id="tag3" value="Code Implementation" class="tag-pill">
+                                <label for="tag3" class="tag-pill-label">💻 Code / Syntax</label>
+
+                                <input type="radio" name="gapPill" id="tag4" value="Pace Too Fast" class="tag-pill">
+                                <label for="tag4" class="tag-pill-label">⚡ Pace Too Fast</label>
+                            </div>
+                        </div>
+
+                        <!-- Urgency & Preferred Resolution Method -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="inputUrgency">Urgency Level</label>
+                                <select id="inputUrgency">
+                                    <option value="Normal">🟢 Normal (Casual understanding)</option>
+                                    <option value="Medium">🟡 Medium (Required for Homework)</option>
+                                    <option value="High">🔴 High (Exam / Quiz Soon!)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputResolution">Desired Resolution</label>
+                                <select id="inputResolution">
+                                    <option value="Recap Next Class">5-min Recap at start of next lecture</option>
+                                    <option value="Office Hours">Discuss during Office Hours</option>
+                                    <option value="Forum Note">Async Forum / Code Snippet</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Details Textarea -->
+                        <div class="form-group">
+                            <label for="inputDetails">Specific Point of Confusion</label>
+                            <textarea id="inputDetails" required placeholder="What made sense right before you got lost? E.g., I understood the fetch() call, but where does the async keyword return the resolved value?"></textarea>
+                        </div>
+
+                        <!-- Anonymous Toggle -->
+                        <div class="toggle-box">
+                            <div class="toggle-text">
+                                <strong>Keep My Doubt Anonymous</strong>
+                                <span>Hide your identity from peers in class feed</span>
+                            </div>
+                            <label class="switch-input">
+                                <input type="checkbox" id="toggleAnonymous">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-submit">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            <span>Transmit Doubt to Faculty Queue</span>
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Collaborative Doubts Feed -->
+                <section class="glass-panel">
+                    <div class="panel-header">
+                        <div>
+                            <div class="panel-title">
+                                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2.3"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                                <span>Classroom Doubt Stream</span>
+                            </div>
+                            <div class="panel-subtitle">Upvote questions you share to alert professors to bottleneck topics</div>
+                        </div>
+
+                        <!-- Feed vs Track Tabs -->
+                        <div class="student-subtabs">
+                            <button id="tabFeedBtn" class="subtab-btn active" onclick="setStudentSubtab('all')">Class Stream</button>
+                            <button id="tabTrackBtn" class="subtab-btn" onclick="setStudentSubtab('mine')">My Logged Doubts</button>
+                        </div>
+                    </div>
+
+                    <!-- Search & Filter Controls -->
+                    <div class="stream-controls">
+                        <div class="search-field">
+                            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="streamSearch" placeholder="Search doubts by keyword or topic..." oninput="renderStudentFeed()">
+                        </div>
+
+                        <select id="streamCourseFilter" class="filter-select" onchange="renderStudentFeed()">
+                            <option value="ALL">All Courses</option>
+                        </select>
+
+                        <select id="streamSortFilter" class="filter-select" onchange="renderStudentFeed()">
+                            <option value="upvotes">Sort: Highest Upvotes (+1)</option>
+                            <option value="urgency">Sort: Exam Urgency</option>
+                            <option value="newest">Sort: Newest First</option>
+                        </select>
+                    </div>
+
+                    <!-- Feed List Container -->
+                    <div id="studentDoubtsContainer" class="doubts-stream">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             2. FACULTY & TA COMMAND CENTER
+             =================================================================== -->
+        <div id="facultyView" class="view-section">
+            
+            <!-- When Not Logged In -->
+            <div id="facultyAuthBox" class="auth-container">
+                <div class="glass-panel" style="padding: 2rem;">
+                    <div id="loginCard">
+                        <header style="text-align:center; margin-bottom: 1.5rem;">
+                            <h2 style="font-size: 1.5rem; font-weight:800; margin-bottom: 0.35rem;">Instructor Command Deck</h2>
+                            <p style="font-size: 0.85rem; color:var(--text-muted);">Sign in to prioritize lecture recaps and schedule office hour resolutions.</p>
+                        </header>
+                        <form id="facultyLoginForm" class="form-grid" onsubmit="handleFacultyLogin(event)">
+                            <div class="form-group">
+                                <label for="facIdInput">Faculty ID (e.g. DR_SHARMA)</label>
+                                <input type="text" id="facIdInput" required placeholder="DR_SHARMA">
+                            </div>
+                            <div class="form-group" style="margin-top:0.85rem;">
+                                <label for="facPassInput">Access Key / Password</label>
+                                <input type="password" id="facPassInput" required placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="btn-submit" style="margin-top: 1.25rem;">Access Command Deck</button>
+                        </form>
+                        <div style="text-align:center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+                            New Course Instructor? <span style="color:var(--primary-light); cursor:pointer; font-weight:700;" onclick="toggleAuthMode('register')">Register Profile</span>
+                        </div>
+                    </div>
+
+                    <div id="registerCard" style="display:none;">
+                        <header style="text-align:center; margin-bottom: 1.5rem;">
+                            <h2 style="font-size: 1.5rem; font-weight:800; margin-bottom: 0.35rem;">Faculty Onboarding</h2>
+                            <p style="font-size: 0.85rem; color:var(--text-muted);">Link your course and set up automated student doubt triage.</p>
+                        </header>
+                        <form id="facultyRegisterForm" class="form-grid" onsubmit="handleFacultyRegister(event)">
+                            <div class="form-group">
+                                <label for="regNameInput">Full Name & Title</label>
+                                <input type="text" id="regNameInput" required placeholder="e.g. Dr. Rajesh Sharma">
+                            </div>
+                            <div class="form-group" style="margin-top:0.6rem;">
+                                <label for="regIdInput">Faculty ID / Username</label>
+                                <input type="text" id="regIdInput" required placeholder="e.g. DR_SHARMA">
+                            </div>
+                            <div class="form-group" style="margin-top:0.6rem;">
+                                <label for="regCourseSelect">Assigned Teaching Course</label>
+                                <select id="regCourseSelect" onchange="handleRegCourseChange(this)" required>
+                                    <option value="" disabled selected>Select course</option>
+                                    <option value="__NEW__">➕ Add Custom Course...</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="regCustomCourseBox" style="display:none; margin-top:0.6rem;">
+                                <label for="regCustomCourseInput">Custom Course Name & Code</label>
+                                <input type="text" id="regCustomCourseInput" placeholder="e.g. ECE210 - Signals & Systems">
+                            </div>
+                            <div class="form-group" style="margin-top:0.6rem;">
+                                <label for="regPassInput">Password</label>
+                                <input type="password" id="regPassInput" required placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="btn-submit" style="margin-top: 1.25rem; background: linear-gradient(135deg, var(--emerald), #059669);">Register & Link Stream</button>
+                        </form>
+                        <div style="text-align:center; margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted);">
+                            Already have an account? <span style="color:var(--primary-light); cursor:pointer; font-weight:700;" onclick="toggleAuthMode('login')">Back to Login</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- When Logged In: Command Center Active -->
+            <div id="facultyDashboardBox" class="faculty-workspace" style="display:none;">
+
+                <!-- Faculty Profile Header Bar -->
+                <div class="glass-panel" style="padding: 1.25rem 1.5rem; display: flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+                    <div>
+                        <h3 id="facDisplayName" style="font-size: 1.25rem; font-weight: 800;">Instructor</h3>
+                        <p id="facDisplayCourse" style="font-size: 0.85rem; color: var(--cyan); font-family:var(--font-mono);">Course: --</p>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button class="btn-action-sm btn-recap" onclick="openExportModal()">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <span>Generate Recap Sheet</span>
+                        </button>
+                        <button class="btn-action-sm" style="color: var(--rose);" onclick="handleFacultyLogout()">Sign Out</button>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Tiles -->
+                <div class="kpi-row">
+                    <div class="kpi-card indigo">
+                        <span class="kpi-label">Course Pending Doubts</span>
+                        <span id="kpiPending" class="kpi-value">0</span>
+                        <span class="kpi-desc">Awaiting triage or review</span>
+                    </div>
+                    <div class="kpi-card rose">
+                        <span class="kpi-label">Exam Critical Alerts</span>
+                        <span id="kpiCritical" class="kpi-value">0</span>
+                        <span class="kpi-desc">High urgency flagged by students</span>
+                    </div>
+                    <div class="kpi-card amber">
+                        <span class="kpi-label">Queued for Next Class</span>
+                        <span id="kpiRecap" class="kpi-value">0</span>
+                        <span class="kpi-desc">Slide starters for tomorrow</span>
+                    </div>
+                    <div class="kpi-card emerald">
+                        <span class="kpi-label">Resolution Rate</span>
+                        <span id="kpiRate" class="kpi-value">0%</span>
+                        <span class="kpi-desc">Inquiries successfully addressed</span>
+                    </div>
+                </div>
+
+                <!-- Bottlenecks & Breakdown Analysis -->
+                <div class="glass-panel analytics-strip">
+                    <div class="analytics-header">
+                        <div>
+                            <div class="panel-title">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary-light)" stroke-width="2.3"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                                <span>Curriculum Stumbling Gaps</span>
+                            </div>
+                            <div class="panel-subtitle">Where students in your course are encountering intellectual friction</div>
+                        </div>
+                    </div>
+                    <div id="bottleneckContainer" class="bottleneck-bars">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Faculty Dedicated Inquiries Stream -->
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.3"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            <span>Live Course Query Queue</span>
+                        </div>
+                        <div id="facStreamCount" style="font-size: 0.78rem; font-weight:700; color:var(--text-muted);">0 Queries</div>
+                    </div>
+                    <div id="facultyStreamContainer" class="doubts-stream">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal: Faculty Answer & Guidance Drawer -->
+    <div id="resolveModal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 style="font-size: 1.15rem; font-weight: 700;">Faculty Answer & Guidance Desk</h3>
+                <button class="icon-btn" onclick="closeResolveModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label style="margin-bottom: 0.4rem;">Update Lifecycle Status</label>
+                    <select id="modalStatusSelect">
+                        <option value="Resolved">Mark as Resolved & Answered</option>
+                        <option value="Recap Scheduled">Queued for 5-min Class Recap</option>
+                        <option value="Office Hours Scheduled">Office Hours Slot Allocated</option>
+                        <option value="In Review">Keep Pending / In Review</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="margin-bottom: 0.4rem;">Conceptual Guidance, Hint or Slide Reference</label>
+                    <textarea id="modalGuidanceText" rows="4" placeholder="Provide an intuitive breakdown, lecture timestamp, or link to recitation slides..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" onclick="closeResolveModal()">Cancel</button>
+                <button class="btn-submit" style="width: auto; padding: 0.65rem 1.4rem;" onclick="saveFacultyResolution()">Save & Transmit to Class</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Export Lecture Recap Sheet (Markdown / PDF) -->
+    <div id="exportModal" class="modal-overlay">
+        <div class="modal-dialog" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3 style="font-size: 1.15rem; font-weight: 700;">Export Lecture Recap Sheet</h3>
+                <button class="icon-btn" onclick="closeExportModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">
+                    Copy this structured Markdown directly into presentation slides, LMS announcements, or click Print to generate a revision handout.
+                </p>
+                <textarea id="markdownExportArea" readonly style="font-family: var(--font-mono); font-size: 0.78rem; height: 260px; line-height: 1.5;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-ghost" onclick="window.print()">Print to PDF / Slides</button>
+                <button class="btn-submit" style="width: auto; padding: 0.65rem 1.4rem;" onclick="copyMarkdownSummary()">Copy Markdown</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Toast Notification System -->
+    <div id="toastShelf" class="toast-shelf"></div>
+
+    <!-- ===================================================================
+         JAVASCRIPT APPLICATION ENGINE
+         =================================================================== -->
+    <script>
+        /* ----------------------------------------------------------------------
+           1. WEB AUDIO SYNTHESIZER ENGINE (Zero External CDNs Required)
+           ---------------------------------------------------------------------- */
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playHapticNote(freq, type = 'sine', duration = 0.08, delay = 0) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+
+                gain.gain.setValueAtTime(0.001, ctx.currentTime + delay);
+                gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + delay + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + duration);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(ctx.currentTime + delay);
+                osc.stop(ctx.currentTime + delay + duration);
+            } catch (err) {
+                // Audio safely muted if blocked by browser policy
+            }
+        }
+
+        function triggerAudioCue(action) {
+            if (!soundEnabled) return;
+            if (action === 'submit') {
+                playHapticNote(523.25, 'sine', 0.1, 0);     // C5
+                playHapticNote(659.25, 'sine', 0.12, 0.06); // E5
+                playHapticNote(783.99, 'sine', 0.16, 0.12); // G5
+            } else if (action === 'upvote') {
+                playHapticNote(880, 'triangle', 0.08, 0);   // A5
+            } else if (action === 'resolve') {
+                playHapticNote(587.33, 'sine', 0.1, 0);     // D5
+                playHapticNote(880, 'sine', 0.12, 0.07);    // A5
+                playHapticNote(1174.66, 'sine', 0.2, 0.14); // D6
+            } else if (action === 'click') {
+                playHapticNote(440, 'triangle', 0.04, 0);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('soundBtn');
+            btn.classList.toggle('active', soundEnabled);
+            if (soundEnabled) {
+                triggerAudioCue('submit');
+                showToast('Audio synth feedback activated', 'info');
+            } else {
+                showToast('Audio muted', 'info');
+            }
+        }
+
+        /* ----------------------------------------------------------------------
+           2. 3D DYNAMIC MESH BACKGROUND CANVAS
+           ---------------------------------------------------------------------- */
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let canvasW = 0, canvasH = 0;
+
+        function resizeCanvas() {
+            canvasW = window.innerWidth;
+            canvasH = window.innerHeight;
+            canvas.width = canvasW;
+            canvas.height = canvasH;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvasW;
+                this.y = Math.random() * canvasH;
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 1.6 + 0.8;
+                this.color = Math.random() > 0.4 ? 'rgba(99, 102, 241, ' : 'rgba(6, 182, 212, ';
+                this.alpha = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0) this.x = canvasW;
+                if (this.x > canvasW) this.x = 0;
+                if (this.y < 0) this.y = canvasH;
+                if (this.y > canvasH) this.y = 0;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color + this.alpha + ')';
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(Math.floor((canvasW * canvasH) / 18000), 55);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvasW, canvasH);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 110) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${0.18 * (1 - dist / 110)})`;
+                        ctx.lineWidth = 0.7;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateCanvas);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        /* ----------------------------------------------------------------------
+           3. DATA STORAGE & SEEDS (LocalStorage + BroadcastChannel)
+           ---------------------------------------------------------------------- */
+        const STORAGE_DOUBTS = 'hicl_ultra_doubts_v3';
+        const STORAGE_COURSES = 'hicl_ultra_courses_v3';
+        const STORAGE_FACULTY = 'hicl_ultra_faculty_v3';
+
+        const SEED_COURSES = [
+            "CSE326 - Internet Programming",
+            "INT108 - Python Programming",
+            "MTH165 - Mathematics for Engineers",
+            "INT335 - Design Thinking",
+            "CSE111 - Orientation to Computing"
+        ];
+
+        const SEED_DOUBTS = [
+            {
+                id: 'doubt-1',
+                studentId: '12048912',
+                course: 'CSE326 - Internet Programming',
+                topic: 'Nested Promise Resolution vs async/await',
+                anchor: 'Slide 28, Lecture 14',
+                category: 'Code Implementation',
+                urgency: 'High',
+                resolutionPref: 'Recap Next Class',
+                details: 'When resolving three dependent fetch calls, does async/await create redundant microtasks compared to Promise.allSettled? How should errors bubble up during class demo step 3?',
+                status: 'Recap Scheduled',
+                author: 'Anonymous Student',
+                timestamp: Date.now() - 3600000 * 2.5,
+                upvotes: 9,
+                userUpvoted: false,
+                facultyNote: 'Great question. Promise chaining and microtask queues will be highlighted on slide 2 at the start of next class.'
+            },
+            {
+                id: 'doubt-2',
+                studentId: '12104523',
+                course: 'MTH165 - Mathematics for Engineers',
+                topic: 'Eigenvalue Algebraic vs Geometric Multiplicity',
+                anchor: 'Blackboard Step 4',
+                category: 'Math Derivation',
+                urgency: 'Medium',
+                resolutionPref: 'Office Hours',
+                details: 'When finding eigenspaces for repeated roots, why is dimension of nullspace (A - λI) sometimes strictly less than the root power? A concrete 3x3 defective matrix walkthrough would help.',
+                status: 'Office Hours Scheduled',
+                author: 'Dev P. (Section C)',
+                timestamp: Date.now() - 3600000 * 8,
+                upvotes: 6,
+                userUpvoted: true,
+                facultyNote: 'Scheduled for Wednesday 3:00 PM Office Hours in Room 402. We will trace Jordan Canonical forms.'
+            },
+            {
+                id: 'doubt-3',
+                studentId: '12093411',
+                course: 'INT108 - Python Programming',
+                topic: 'Pandas Multi-Index GroupBy Aggregations',
+                anchor: 'Timestamp 48:15',
+                category: 'Conceptual Intuition',
+                urgency: 'Normal',
+                resolutionPref: 'Forum Note',
+                details: 'Struggling to visualize level unstacking when chaining .agg({"sales": ["mean", "sum"]}). The multi-tier headers get convoluted.',
+                status: 'Resolved',
+                author: 'Anonymous Student',
+                timestamp: Date.now() - 3600000 * 22,
+                upvotes: 3,
+                userUpvoted: false,
+                facultyNote: 'Use df.columns = ["_".join(col) for col in df.columns] to flatten hierarchal tuples cleanly.'
+            }
+        ];
+
+        const SEED_FACULTY = {
+            "DR_SHARMA": {
+                name: "Dr. Rajesh Sharma",
+                course: "CSE326 - Internet Programming",
+                pass: "pass123"
+            }
+        };
+
+        let doubts = [];
+        let courses = [];
+        let facultyAccounts = {};
+        let activeFaculty = null;
+        let studentSubtab = 'all'; // 'all' | 'mine'
+        let modalDoubtId = null;
+
+        // BroadcastChannel for instant multi-tab sync
+        let syncChannel = null;
+        try {
+            if ('BroadcastChannel' in window) {
+                syncChannel = new BroadcastChannel('hicl_sync_channel');
+                syncChannel.onmessage = (event) => {
+                    if (event.data === 'sync') {
+                        loadFromStorage();
+                        refreshAllViews();
+                    }
+                };
+            }
+        } catch (e) {
+            console.warn('BroadcastChannel fallback enabled');
+        }
+
+        window.addEventListener('storage', (e) => {
+            if ([STORAGE_DOUBTS, STORAGE_COURSES, STORAGE_FACULTY].includes(e.key)) {
+                loadFromStorage();
+                refreshAllViews();
+            }
+        });
+
+        function broadcastSync() {
+            saveToStorage();
+            if (syncChannel) {
+                try { syncChannel.postMessage('sync'); } catch (e) {}
+            }
+        }
+
+        function loadFromStorage() {
+            doubts = JSON.parse(localStorage.getItem(STORAGE_DOUBTS)) || SEED_DOUBTS;
+            courses = JSON.parse(localStorage.getItem(STORAGE_COURSES)) || SEED_COURSES;
+            facultyAccounts = JSON.parse(localStorage.getItem(STORAGE_FACULTY)) || SEED_FACULTY;
+        }
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_DOUBTS, JSON.stringify(doubts));
+            localStorage.setItem(STORAGE_COURSES, JSON.stringify(courses));
+            localStorage.setItem(STORAGE_FACULTY, JSON.stringify(facultyAccounts));
+        }
+
+        /* ----------------------------------------------------------------------
+           4. VIEW CONTROLLERS & PERSPECTIVES
+           ---------------------------------------------------------------------- */
+        function switchPerspective(role) {
+            triggerAudioCue('click');
+            const btnS = document.getElementById('btnRoleStudent');
+            const btnF = document.getElementById('btnRoleFaculty');
+            const sView = document.getElementById('studentView');
+            const fView = document.getElementById('facultyView');
+
+            if (role === 'student') {
+                btnS.classList.add('active');
+                btnF.classList.remove('active');
+                sView.classList.add('active');
+                fView.classList.remove('active');
+                renderStudentFeed();
+            } else {
+                btnF.classList.add('active');
+                btnS.classList.remove('active');
+                fView.classList.add('active');
+                sView.classList.remove('active');
+                if (activeFaculty) {
+                    renderFacultyDashboard();
+                } else {
+                    document.getElementById('facultyAuthBox').style.display = 'block';
+                    document.getElementById('facultyDashboardBox').style.display = 'none';
+                }
+            }
+        }
+
+        function setStudentSubtab(tab) {
+            triggerAudioCue('click');
+            studentSubtab = tab;
+            document.getElementById('tabFeedBtn').classList.toggle('active', tab === 'all');
+            document.getElementById('tabTrackBtn').classList.toggle('active', tab === 'mine');
+            renderStudentFeed();
+        }
+
+        function selectCourseChip(course) {
+            triggerAudioCue('click');
+            document.getElementById('inputCourse').value = course;
+        }
+
+        function updateCourseDropdowns() {
+            const studentSelect = document.getElementById('inputCourse');
+            const streamFilter = document.getElementById('streamCourseFilter');
+            const regSelect = document.getElementById('regCourseSelect');
+
+            const prevStudent = studentSelect.value;
+            const prevFilter = streamFilter.value;
+            const prevReg = regSelect.value;
+
+            // Student submission select
+            studentSelect.innerHTML = `<option value="" disabled selected>Select course</option>`;
+            courses.forEach(c => {
+                studentSelect.innerHTML += `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`;
+            });
+            if (courses.includes(prevStudent)) studentSelect.value = prevStudent;
+
+            // Stream filter
+            streamFilter.innerHTML = `<option value="ALL">All Courses</option>`;
+            courses.forEach(c => {
+                streamFilter.innerHTML += `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`;
+            });
+            streamFilter.value = prevFilter || 'ALL';
+
+            // Faculty reg select
+            regSelect.innerHTML = `<option value="" disabled selected>Select course</option>`;
+            courses.forEach(c => {
+                regSelect.innerHTML += `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`;
+            });
+            regSelect.innerHTML += `<option value="__NEW__">➕ Add Custom Course...</option>`;
+            if (prevReg) regSelect.value = prevReg;
+        }
+
+        /* ----------------------------------------------------------------------
+           5. STUDENT ACTIONS (Submission, Upvote)
+           ---------------------------------------------------------------------- */
+        function handleStudentFormSubmit(e) {
+            e.preventDefault();
+            const sid = document.getElementById('inputStudentId').value.trim();
+            const course = document.getElementById('inputCourse').value;
+            const topic = document.getElementById('inputTopic').value.trim();
+            const anchor = document.getElementById('inputAnchor').value.trim() || 'Classroom Lecture';
+            const urgency = document.getElementById('inputUrgency').value;
+            const resolution = document.getElementById('inputResolution').value;
+            const details = document.getElementById('inputDetails').value.trim();
+            const isAnon = document.getElementById('toggleAnonymous').checked;
+            const gapTag = document.querySelector('input[name="gapPill"]:checked')?.value || 'Intuition';
+
+            if (!course || !topic || !details) {
+                showToast('Please provide all doubt details.', 'warn');
+                return;
+            }
+
+            const newDoubt = {
+                id: 'doubt-' + Date.now(),
+                studentId: sid,
+                course: course,
+                topic: topic,
+                anchor: anchor,
+                category: gapTag,
+                urgency: urgency,
+                resolutionPref: resolution,
+                details: details,
+                status: 'Open',
+                author: isAnon ? 'Anonymous Student' : `Student (${sid})`,
+                timestamp: Date.now(),
+                upvotes: 1,
+                userUpvoted: true,
+                facultyNote: ''
+            };
+
+            doubts.unshift(newDoubt);
+            broadcastSync();
+            triggerAudioCue('submit');
+            showToast('Doubt transmitted to Faculty Queue!', 'success');
+
+            document.getElementById('studentDoubtForm').reset();
+            renderStudentFeed();
+        }
+
+        function toggleUpvote(id) {
+            const item = doubts.find(d => d.id === id);
+            if (!item) return;
+
+            if (item.userUpvoted) {
+                item.upvotes = Math.max(0, item.upvotes - 1);
+                item.userUpvoted = false;
+            } else {
+                item.upvotes += 1;
+                item.userUpvoted = true;
+                triggerAudioCue('upvote');
+                showToast('Upvoted "+1 Me Too" — Roadblock escalated to professor', 'info');
+            }
+            broadcastSync();
+            renderStudentFeed();
+            if (activeFaculty) renderFacultyDashboard();
+        }
+
+        /* ----------------------------------------------------------------------
+           6. FEED RENDERING (Student View)
+           ---------------------------------------------------------------------- */
+        function renderStudentFeed() {
+            const container = document.getElementById('studentDoubtsContainer');
+            const search = document.getElementById('streamSearch').value.toLowerCase().trim();
+            const courseFilter = document.getElementById('streamCourseFilter').value;
+            const sort = document.getElementById('streamSortFilter').value;
+            const currentSid = (document.getElementById('inputStudentId').value || '').trim();
+
+            let list = [...doubts];
+
+            // Subtab filter: all vs mine
+            if (studentSubtab === 'mine') {
+                if (currentSid) {
+                    list = list.filter(d => d.studentId.toLowerCase() === currentSid.toLowerCase());
+                } else {
+                    list = list.filter(d => d.userUpvoted === true);
+                }
+            }
+
+            // Course filter
+            if (courseFilter !== 'ALL') {
+                list = list.filter(d => d.course === courseFilter);
+            }
+
+            // Keyword Search
+            if (search) {
+                list = list.filter(d =>
+                    d.topic.toLowerCase().includes(search) ||
+                    d.details.toLowerCase().includes(search) ||
+                    d.course.toLowerCase().includes(search) ||
+                    d.anchor.toLowerCase().includes(search)
+                );
+            }
+
+            // Sorting
+            if (sort === 'upvotes') {
+                list.sort((a, b) => b.upvotes - a.upvotes);
+            } else if (sort === 'urgency') {
+                const weights = { 'High': 3, 'Medium': 2, 'Normal': 1 };
+                list.sort((a, b) => (weights[b.urgency] || 1) - (weights[a.urgency] || 1));
+            } else {
+                list.sort((a, b) => b.timestamp - a.timestamp);
+            }
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-stream-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <h4 style="font-weight:700; color:#fff; margin-bottom:0.25rem;">No Doubts in Stream</h4>
+                        <p style="font-size:0.83rem;">No active inquiries match your current filters. Be the first to log a topic!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(d => {
+                const isHigh = d.urgency === 'High';
+                const isResolved = d.status === 'Resolved';
+                const timeAgo = formatTimeAgo(d.timestamp);
+
+                let statusBadgeClass = 'open';
+                if (d.status === 'Resolved') statusBadgeClass = 'resolved';
+                else if (d.status === 'Recap Scheduled') statusBadgeClass = 'recap';
+                else if (d.status === 'Office Hours Scheduled') statusBadgeClass = 'office';
+
+                let urgencyClass = d.urgency.toLowerCase();
+
+                return `
+                    <article class="doubt-item ${isHigh && !isResolved ? 'urgency-high' : ''} ${isResolved ? 'status-resolved' : ''}">
+                        <div class="doubt-header-row">
+                            <div class="badge-cluster">
+                                <span class="course-tag">${escapeHtml(d.course)}</span>
+                                <span class="status-badge ${statusBadgeClass}">
+                                    <span style="display:inline-block; width:5px; height:5px; border-radius:50%; background:currentColor;"></span>
+                                    ${escapeHtml(d.status)}
+                                </span>
+                                <span class="urgency-pill ${urgencyClass}">
+                                    ${d.urgency === 'High' ? '🔥 ' : ''}${escapeHtml(d.urgency)}
+                                </span>
+                            </div>
+                            <span style="font-size:0.75rem; color:var(--text-faint);">${timeAgo}</span>
+                        </div>
+
+                        <div>
+                            <div class="doubt-title">
+                                <span>${escapeHtml(d.topic)}</span>
+                                <span class="lecture-anchor">${escapeHtml(d.anchor)}</span>
+                            </div>
+                            <div style="font-size:0.75rem; color:var(--text-faint); margin-top:2px;">
+                                Roadblock Type: <strong style="color:var(--text-muted);">${escapeHtml(d.category)}</strong>
+                            </div>
+                        </div>
+
+                        <div class="doubt-body">${escapeHtml(d.details)}</div>
+
+                        ${d.facultyNote ? `
+                            <div class="instructor-note-box">
+                                <div class="instructor-note-header">
+                                    <span style="display:flex; align-items:center; gap:5px;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg>
+                                        Faculty Resolution Guidance
+                                    </span>
+                                    <span>Pref: ${escapeHtml(d.resolutionPref)}</span>
+                                </div>
+                                <div class="instructor-note-text">${escapeHtml(d.facultyNote)}</div>
+                            </div>
+                        ` : ''}
+
+                        <div class="doubt-footer">
+                            <span>Author: ${escapeHtml(d.author)}</span>
+                            <div>
+                                <button class="btn-upvote ${d.userUpvoted ? 'active' : ''}" onclick="toggleUpvote('${d.id}')" title="Upvote if you lost track here too">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="${d.userUpvoted ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                                    <span>+1 Me Too (${d.upvotes})</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        /* ----------------------------------------------------------------------
+           7. FACULTY AUTH & DASHBOARD
+           ---------------------------------------------------------------------- */
+        function toggleAuthMode(mode) {
+            triggerAudioCue('click');
+            document.getElementById('loginCard').style.display = mode === 'login' ? 'block' : 'none';
+            document.getElementById('registerCard').style.display = mode === 'register' ? 'block' : 'none';
+        }
+
+        function handleRegCourseChange(select) {
+            const customBox = document.getElementById('regCustomCourseBox');
+            const customInput = document.getElementById('regCustomCourseInput');
+            if (select.value === '__NEW__') {
+                customBox.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customBox.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+
+        function handleFacultyLogin(e) {
+            e.preventDefault();
+            const id = document.getElementById('facIdInput').value.trim().toUpperCase();
+            const pass = document.getElementById('facPassInput').value;
+
+            if (facultyAccounts[id] && facultyAccounts[id].pass === pass) {
+                activeFaculty = facultyAccounts[id];
+                activeFaculty.id = id;
+                triggerAudioCue('submit');
+                showToast(`Welcome back, ${activeFaculty.name}!`, 'success');
+                document.getElementById('facultyLoginForm').reset();
+                renderFacultyDashboard();
+            } else {
+                showToast('Invalid Faculty ID or Password.', 'warn');
+            }
+        }
+
+        function handleFacultyRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regNameInput').value.trim();
+            const id = document.getElementById('regIdInput').value.trim().toUpperCase();
+            const pass = document.getElementById('regPassInput').value;
+            let course = document.getElementById('regCourseSelect').value;
+
+            if (course === '__NEW__') {
+                const custom = document.getElementById('regCustomCourseInput').value.trim();
+                if (custom) {
+                    course = custom;
+                    if (!courses.includes(course)) {
+                        courses.push(course);
+                        updateCourseDropdowns();
+                    }
+                }
+            }
+
+            if (facultyAccounts[id]) {
+                showToast('Faculty ID already exists.', 'warn');
+                return;
+            }
+
+            facultyAccounts[id] = { name, course, pass };
+            broadcastSync();
+            showToast('Registration successful! Please sign in.', 'success');
+            document.getElementById('facultyRegisterForm').reset();
+            document.getElementById('regCustomCourseBox').style.display = 'none';
+            toggleAuthMode('login');
+        }
+
+        function handleFacultyLogout() {
+            activeFaculty = null;
+            triggerAudioCue('click');
+            showToast('Signed out of Faculty Desk.', 'info');
+            document.getElementById('facultyDashboardBox').style.display = 'none';
+            document.getElementById('facultyAuthBox').style.display = 'block';
+        }
+
+        function renderFacultyDashboard() {
+            if (!activeFaculty) return;
+            document.getElementById('facultyAuthBox').style.display = 'none';
+            document.getElementById('facultyDashboardBox').style.display = 'flex';
+
+            document.getElementById('facDisplayName').innerText = activeFaculty.name;
+            document.getElementById('facDisplayCourse').innerText = `Assigned Course: ${activeFaculty.course}`;
+
+            const courseDoubts = doubts.filter(d => d.course === activeFaculty.course);
+            const pending = courseDoubts.filter(d => d.status !== 'Resolved');
+            const critical = courseDoubts.filter(d => d.urgency === 'High' && d.status !== 'Resolved');
+            const recap = courseDoubts.filter(d => d.status === 'Recap Scheduled');
+            const resolved = courseDoubts.filter(d => d.status === 'Resolved');
+            const rate = courseDoubts.length > 0 ? Math.round((resolved.length / courseDoubts.length) * 100) : 0;
+
+            document.getElementById('kpiPending').innerText = pending.length;
+            document.getElementById('kpiCritical').innerText = critical.length;
+            document.getElementById('kpiRecap').innerText = recap.length;
+            document.getElementById('kpiRate').innerText = `${rate}%`;
+
+            renderBottlenecks(courseDoubts);
+            renderFacultyQueryStream(courseDoubts);
+        }
+
+        function renderBottlenecks(courseDoubts) {
+            const container = document.getElementById('bottleneckContainer');
+            const counts = {
+                'Math Derivation': 0,
+                'Conceptual Intuition': 0,
+                'Code Implementation': 0,
+                'Pace Too Fast': 0
+            };
+
+            courseDoubts.forEach(d => {
+                if (counts[d.category] !== undefined) counts[d.category]++;
+            });
+
+            const max = Math.max(...Object.values(counts), 1);
+
+            container.innerHTML = Object.entries(counts).map(([cat, count]) => {
+                const pct = Math.round((count / max) * 100);
+                return `
+                    <div class="bottleneck-item">
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700;">
+                            <span>${cat}</span>
+                            <span style="color:var(--primary-light);">${count} queries</span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-fill" style="width: ${pct}%;"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderFacultyQueryStream(courseDoubts) {
+            const container = document.getElementById('facultyStreamContainer');
+            document.getElementById('facStreamCount').innerText = `${courseDoubts.length} Queries Logged`;
+
+            if (courseDoubts.length === 0) {
+                container.innerHTML = `<div class="empty-stream-box"><p>No student inquiries registered for this course yet.</p></div>`;
+                return;
+            }
+
+            container.innerHTML = courseDoubts.map(d => {
+                return `
+                    <article class="doubt-item ${d.urgency === 'High' && d.status !== 'Resolved' ? 'urgency-high' : ''} ${d.status === 'Resolved' ? 'status-resolved' : ''}">
+                        <div class="doubt-header-row">
+                            <div class="badge-cluster">
+                                <span class="status-badge ${d.status === 'Resolved' ? 'resolved' : 'open'}">${d.status}</span>
+                                <span class="urgency-pill ${d.urgency.toLowerCase()}">${d.urgency}</span>
+                                <span style="font-size:0.75rem; color:var(--text-muted); font-family:var(--font-mono);">${d.author}</span>
+                            </div>
+                            <span style="font-size:0.75rem; color:var(--text-faint);">${formatTimeAgo(d.timestamp)}</span>
+                        </div>
+
+                        <div>
+                            <strong style="color:#fff; font-size:1.05rem;">${escapeHtml(d.topic)}</strong>
+                            <span class="lecture-anchor">${escapeHtml(d.anchor)}</span>
+                            <p class="doubt-body" style="margin-top:0.4rem;">${escapeHtml(d.details)}</p>
+                        </div>
+
+                        ${d.facultyNote ? `
+                            <div class="instructor-note-box">
+                                <div class="instructor-note-header"><span>Your Current Note</span></div>
+                                <div class="instructor-note-text">${escapeHtml(d.facultyNote)}</div>
+                            </div>
+                        ` : ''}
+
+                        <div class="doubt-footer">
+                            <span style="color:var(--text-faint);">Pref: ${escapeHtml(d.resolutionPref)} • ${d.upvotes} upvotes</span>
+                            <div class="faculty-action-grid">
+                                <button class="btn-action-sm btn-recap" onclick="quickSetFacultyStatus('${d.id}', 'Recap Scheduled')">Queue for Class Recap</button>
+                                <button class="btn-action-sm" onclick="quickSetFacultyStatus('${d.id}', 'Office Hours Scheduled')">Office Hours</button>
+                                <button class="btn-action-sm btn-resolve" onclick="openResolveModal('${d.id}')">Write Guidance / Resolve ✓</button>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function quickSetFacultyStatus(id, newStatus) {
+            const item = doubts.find(d => d.id === id);
+            if (!item) return;
+            item.status = newStatus;
+            broadcastSync();
+            triggerAudioCue('click');
+            showToast(`Status shifted to "${newStatus}"`, 'info');
+            renderFacultyDashboard();
+            renderStudentFeed();
+        }
+
+        /* ----------------------------------------------------------------------
+           8. RESOLUTION MODAL
+           ---------------------------------------------------------------------- */
+        function openResolveModal(id) {
+            modalDoubtId = id;
+            const item = doubts.find(d => d.id === id);
+            if (!item) return;
+
+            document.getElementById('modalStatusSelect').value = item.status === 'Open' ? 'Resolved' : item.status;
+            document.getElementById('modalGuidanceText').value = item.facultyNote || '';
+            document.getElementById('resolveModal').classList.add('open');
+            triggerAudioCue('click');
+        }
+
+        function closeResolveModal() {
+            document.getElementById('resolveModal').classList.remove('open');
+            modalDoubtId = null;
+        }
+
+        function saveFacultyResolution() {
+            if (!modalDoubtId) return;
+            const item = doubts.find(d => d.id === modalDoubtId);
+            if (!item) return;
+
+            const newStatus = document.getElementById('modalStatusSelect').value;
+            const note = document.getElementById('modalGuidanceText').value.trim();
+
+            item.status = newStatus;
+            item.facultyNote = note;
+
+            if (newStatus === 'Resolved') {
+                triggerAudioCue('resolve');
+            } else {
+                triggerAudioCue('submit');
+            }
+
+            broadcastSync();
+            closeResolveModal();
+            showToast('Guidance published & student stream notified!', 'success');
+            renderFacultyDashboard();
+            renderStudentFeed();
+        }
+
+        /* ----------------------------------------------------------------------
+           9. LECTURE RECAP SHEET / MARKDOWN EXPORT
+           ---------------------------------------------------------------------- */
+        function openExportModal() {
+            triggerAudioCue('click');
+            const markdown = generateMarkdownSummary();
+            document.getElementById('markdownExportArea').value = markdown;
+            document.getElementById('exportModal').classList.add('open');
+        }
+
+        function closeExportModal() {
+            document.getElementById('exportModal').classList.remove('open');
+        }
+
+        function generateMarkdownSummary() {
+            const now = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            let md = `# Lecture Recap & Doubt Digest — Heard in Class, Lost After\n`;
+            md += `*Generated: ${now} | Active Questions Tracked: ${doubts.length}*\n\n`;
+
+            const uniqueCourses = Array.from(new Set(doubts.map(d => d.course)));
+            uniqueCourses.forEach(course => {
+                md += `## Course: ${course}\n`;
+                const cDoubts = doubts.filter(d => d.course === course);
+                cDoubts.forEach((d, i) => {
+                    md += `### ${i + 1}. ${d.topic} [${d.upvotes} Upvotes | ${d.urgency} Urgency]\n`;
+                    md += `- **Lecture Anchor:** ${d.anchor}\n`;
+                    md += `- **Roadblock Classification:** ${d.category}\n`;
+                    md += `- **Student Confusion:** ${d.details}\n`;
+                    if (d.facultyNote) {
+                        md += `- **Faculty Direction / Hint:** ${d.facultyNote}\n`;
+                    }
+                    md += `- **Action Status:** ${d.status}\n\n`;
+                });
+            });
+
+            return md;
+        }
+
+        function copyMarkdownSummary() {
+            const area = document.getElementById('markdownExportArea');
+            area.select();
+            document.execCommand('copy');
+            triggerAudioCue('submit');
+            showToast('Markdown recap copied to clipboard!', 'success');
+        }
+
+        /* ----------------------------------------------------------------------
+           10. TOAST NOTIFICATION ENGINE
+           ---------------------------------------------------------------------- */
+        function showToast(msg, type = 'info') {
+            const shelf = document.getElementById('toastShelf');
+            const toast = document.createElement('div');
+            toast.className = `toast-msg toast-${type}`;
+            
+            const icon = type === 'success' 
+                ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`
+                : type === 'warn'
+                ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+                : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary-light)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+
+            toast.innerHTML = `${icon}<span>${escapeHtml(msg)}</span><div class="toast-meter"></div>`;
+            shelf.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.3s, transform 0.3s';
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 320);
+            }, 3500);
+        }
+
+        /* ----------------------------------------------------------------------
+           11. HELPERS & UTILITIES
+           ---------------------------------------------------------------------- */
+        function formatTimeAgo(ts) {
+            const diff = Math.floor((Date.now() - ts) / 1000);
+            if (diff < 60) return 'Just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function refreshAllViews() {
+            updateCourseDropdowns();
+            renderStudentFeed();
+            if (activeFaculty) renderFacultyDashboard();
+        }
+
+        // Global Boot Sequence
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvas();
+            initParticles();
+            animateCanvas();
+            loadFromStorage();
+            refreshAllViews();
+        });
+    </script>
+</body>
+</html>
